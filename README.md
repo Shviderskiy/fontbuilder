@@ -6,7 +6,7 @@ Utility for create texture atlases with bitmap chars from FreeType,TrueType and 
 
 Current state: alpha
 
-Downloads : [from github](https://github.com/andryblack/fontbuilder/downloads)
+Downloads : [from github](https://github.com/Shviderskiy/fontbuilder/releases)
 Support : [gamedev.ru forum theme](http://www.gamedev.ru/projects/forum/?id=133540) (russian)
 
 Program features that make it outstanding comparing to other programs:
