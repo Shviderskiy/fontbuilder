@@ -70,7 +70,9 @@ void CharactersFrame::on_pushButtonImport_clicked()
         if (f.open(QFile::ReadOnly | QFile::Text)) {
             QByteArray data = f.readAll();
             QString text = QString::fromUtf8(data.constData(),data.size());
-            text = removeDuplicates(sortChars(text));
+            if (ui->checkBoxUniqueCharacters->isChecked())
+                text = removeDuplicates(sortChars(text));
+            else text = sortChars(text);
             ui->plainTextEdit->setPlainText(text);
         }
     }
@@ -99,7 +101,10 @@ QString CharactersFrame::getCharacters() const {
 void CharactersFrame::on_plainTextEdit_textChanged()
 {
     if (m_config) {
-        m_config->setCharacters(removeDuplicates(sortChars(getCharacters())));
+
+        if (ui->checkBoxUniqueCharacters->isChecked())
+            m_config->setCharacters(removeDuplicates(sortChars(getCharacters())));
+        else m_config->setCharacters(sortChars(getCharacters()));
     }
 }
 
@@ -109,6 +114,7 @@ void CharactersFrame::setConfig(FontConfig* config) {
 }
 
 QString CharactersFrame::removeDuplicates(const QString& text) const {
+
     std::vector<uint> ucs4chars = text.toUcs4().toStdVector();
 
     // Remove duplicates with C++ algorithm
@@ -143,7 +149,9 @@ void CharactersFrame::on_pushButton_SelectFromCharsMap_clicked()
     int result = dialog.exec();
     (void)result;
     if (dialog.result()==QDialog::Accepted) {
-        m_config->setCharacters(removeDuplicates(sortChars(dialog.getCharacters())));
+        if (ui->checkBoxUniqueCharacters->isChecked())
+            m_config->setCharacters(removeDuplicates(sortChars(dialog.getCharacters())));
+        else m_config->setCharacters(sortChars(dialog.getCharacters()));
         bool block = ui->plainTextEdit->blockSignals(true);
         ui->plainTextEdit->setPlainText(m_config->characters());
         ui->plainTextEdit->blockSignals(block);
@@ -152,6 +160,10 @@ void CharactersFrame::on_pushButton_SelectFromCharsMap_clicked()
 
 void CharactersFrame::on_pushButtonRefresh_clicked()
 {
+    if (ui->checkBoxUniqueCharacters->isChecked())
+        m_config->setCharacters(removeDuplicates(sortChars(m_config->characters())));
+    else m_config->setCharacters(sortChars(m_config->characters()));
+
     bool block = ui->plainTextEdit->blockSignals(true);
     ui->plainTextEdit->setPlainText(m_config->characters());
     ui->plainTextEdit->blockSignals(block);
